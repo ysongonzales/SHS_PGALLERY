@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Portfolio Gallery</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #800000, #ff0000);
+            padding: 20px;
+            text-align: center;
+            color: white;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeIn 1.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .title {
+            background-color: #5a0000;
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .card {
+            position: relative;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: popIn 1s ease-in-out forwards;
+            transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .card:nth-child(1) { animation-delay: 0.3s; }
+        .card:nth-child(2) { animation-delay: 0.5s; }
+        .card:nth-child(3) { animation-delay: 0.7s; }
+        .card:nth-child(4) { animation-delay: 0.9s; }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .card .content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out;
+        }
+
+        .card.active .content {
+            max-height: 150px;
+            opacity: 1;
+        }
+
+        .card.active {
+            transform: scale(1.5);
+            z-index: 10;
+            filter: blur(0);
+        }
+
+        .blurred {
+            filter: blur(5px);
+        }
+
+        .extra-images {
+            display: none;
+            margin-top: 40px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .extra-images img {
+            width: 400px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        .extra-images.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .extra-images.show img {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+    <script>
+        const imagesData = {
+            0: ["ABM1.jpg", "ABM2.jpg", "ABM3.jpg", "ABM4.jpg", "ABM5.jpg", "ABM6.jpg", "ABM7.jpg", "ABM8.jpg"], // Images for card 1
+            1: ["HUMSS.jpg","HUMSS1.jpg","HUMSS2.jpg","HUMSS3.jpg","HUMSS4.jpg","HUMSS5.jpg","HUMSS6.jpg","HUMSS7.jpg",], // Images for card 2
+            2: ["ICT1.jpg", "ICT2.jpg","ICT3.jpg","ICT4.jpg","ICT5.jpg","ICT6.jpg","ICT7.jpg","ICT8.jpg","ICT9.jpg","ICT.jpg"], // Images for card 3
+            3: ["AFA1.jpg", "AFA2.jpg","AFA3.jpg","AFA4.jpg","AFA5.jpg","AFA6.jpg","AFA7.jpg","AFA8.jpg",]  // Images for card 4
+        };
+
+        function toggleContent(card, cardIndex) {
+            const cards = document.querySelectorAll('.card');
+            const extraImagesSection = document.querySelector('.extra-images');
+            const imageContainer = document.querySelector('.extra-images .images');
+
+            // If the clicked card is already active, unblur all and hide the images
+            if (card.classList.contains('active')) {
+                cards.forEach(function(c) {
+                    c.classList.remove('blurred');
+                    c.classList.remove('active');
+                });
+                extraImagesSection.classList.remove('show');  // Hide extra images
+            } else {
+                // Apply blur to all cards except the clicked one
+                cards.forEach(function(c) {
+                    if (c !== card) {
+                        c.classList.add('blurred');  // Apply blur to other cards
+                        c.classList.remove('active'); // Remove active class from others
+                    }
+                });
+
+                // Make clicked card active
+                card.classList.add('active');
+                
+                // Show extra images below with smooth transition
+                extraImagesSection.classList.add('show');
+
+                // Update the images for the clicked card
+                imageContainer.innerHTML = ''; // Clear existing images
+                imagesData[cardIndex].forEach(imgSrc => {
+                    const img = document.createElement('img');
+                    img.src = imgSrc;
+                    imageContainer.appendChild(img);
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="title"><h1>STANDS</h1></div>
+
+    <div class="container">
+        <div class="grid">
+            <div class="card" onclick="toggleContent(this, 0)">
+                <img src="abmlogo.jpg" alt="HTML">
+                <div class="content">
+                    <h3>Accountancy, Business, and Management (ABM) </h3>
+                    <p>This strand focuses on developing students' understanding of business principles, financial management, and entrepreneurial skills.</p>
+                </div>
+            </div>
+
+            <div class="card" onclick="toggleContent(this, 1)">
+                <img src="humsslogo.jpg" alt="CSS">
+                <div class="content">
+                    <h3>Humanities and Social Sciences (HUMSS) </h3>
+                    <p>Emphasizes critical thinking, research skills, and understanding human behavior, ideal for fields like law, journalism, and education.</p>
+                </div>
+            </div>
+
+            <div class="card" onclick="toggleContent(this, 2)">
+                <img src="Hexagonal Thinking Graphic Organizer Worksheet in Black and White Schematic Style.jpg" alt="PHP">
+                <div class="content">
+                    <h3>Information and Communications Technology (ICT)</h3>
+                    <p> Focuses on computer programming, web development, and network administration, preparing students for careers in the tech industry.
+
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" onclick="toggleContent(this, 3)">
+                <img src="abmlogo (2).jpg" alt="JavaScript">
+                <div class="content">
+                    <h3>Agri-Fishery Arts (AFA)</h3>
+                    <p> Offers training in agriculture and fisheries, preparing students for careers in farming, aquaculture, and related fields.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Extra Images section -->
+        <div class="extra-images">
+            <h1>GALLERY</h1>
+            <div class="images"></div>
+        </div>
+    </div>
+</body>
+</html>
